@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Shop</title>
+</head>
+<body>
+    <h1>Products</h1>
+    <form method="post" action="/create-checkout-session/">
+        {% csrf_token %}
+        {% for p in products %}
+            <div>
+                <strong>{{ p.name }}</strong> - ${{ p.price|floatformat:2 }}
+                <input type="number" name="quantity_{{ p.id }}" value="0" min="0">
+            </div>
+        {% endfor %}
+        <button type="submit">Buy</button>
+    </form>
+
+    <h2>My Orders</h2>
+    <ul>
+        {% for order in orders %}
+            <li>
+                Order {{ order.id }} - Paid: {{ order.paid }}  
+                <ul>
+                    {% for item in order.items.all %}
+                        <li>{{ item.quantity }} x {{ item.product_name }} (${{ item.price }})</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% empty %}
+            <li>No orders yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
